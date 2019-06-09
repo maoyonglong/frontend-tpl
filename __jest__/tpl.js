@@ -428,7 +428,49 @@ function Parser() {
 
 Parser.prototype.parse = parse;
 
+function render(ast) {
+  var _this = this;
+
+  var nodes = [];
+  ast.forEach(function (astNode) {
+    var node = null;
+    var type = astNode.type;
+
+    if (type === 'text') {
+      node = document.createTextNode(astNode.text);
+
+      _this.handleTextNode(node, astNode);
+    } else if (type === 'note') {
+      node = document.createComment(astNode.note);
+
+      _this.handleNoteNode(node, astNode);
+    } else if (type === 'tag') {
+      node = document.createElement(astNode.tag);
+
+      _this.handleTagNode(node, astNode);
+    }
+
+    if (astNode.children) {
+      var children = render.call(_this, astNode.children);
+      children.forEach(function (child) {
+        node.appendChild(child);
+      });
+    }
+
+    nodes.appendChild(node);
+  });
+  return nodes;
+}
+
 function Render() {}
+
+Render.prototype.render = render;
+
+Render.prototype.handleTextNode = function (node, astNode) {};
+
+Render.prototype.handleNoteNode = function (node, astNode) {};
+
+Render.prototype.handleTagNode = function (node, astNode) {};
 
 function Complier() {
   this.parser = new Parser();
@@ -453,9 +495,16 @@ Tpl.prototype.parse = function (str) {
   return this;
 };
 
-Tpl.prototype.render = function (str) {
-  this._dom = this.compiler.render(this._ast || str);
+Tpl.prototype.render = function (ast) {
+  this._dom = this.compiler.render(this._ast || ast);
   return this;
+};
+
+Tpl.prototype.overrideRender = function (func) {
+  this.prototype.render = function (ast) {
+    this.dom = func.call(this, this._ast || ast);
+    return this;
+  };
 };
 
 module.exports = Tpl;

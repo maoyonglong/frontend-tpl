@@ -8,5 +8,9 @@
 </head>
 <body>
     <script src="dist/tpl.bundle.js"></script>
+    <script>
+        var tpl = new Tpl()
+        console.log(tpl.parse(`<div class="div"><p class="red">sdfsdfas</p></div><a>sdfsdf</a>`).render()._dom[0])
+    </script>
 </body>
 </html>

@@ -20,6 +20,6 @@ export default {
       runtimeHelpers: true,
       ...babelConfig
     }),
-    isBuild ? uglify() : undefined
+    // isBuild ? uglify() : undefined
   ]
 }

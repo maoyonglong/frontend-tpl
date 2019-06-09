@@ -10,9 +10,13 @@ Tpl.prototype.parse = function (str) {
   return this
 }
 
-Tpl.prototype.render = function (str) {
-  this._dom = this.compiler.render(this._ast || str)
+Tpl.prototype.render = function (ast) {
+  this._dom = this.compiler.render(this._ast || ast)
   return this
+}
+
+Tpl.prototype.overrideRender = function (name, func) {
+  this.compiler.overrideRender(name, func)
 }
 
 export default Tpl

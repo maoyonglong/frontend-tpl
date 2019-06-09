@@ -3,7 +3,7 @@ import Render from './render'
 
 function Complier () {
   this.parser = new Parser()
-  this.render = new Render()
+  this.renderer = new Render()
 }
 
 Complier.prototype.parse = function (str) {
@@ -11,7 +11,11 @@ Complier.prototype.parse = function (str) {
 }
 
 Complier.prototype.render = function (ast) {
-  return this.render.render(ast)
+  return this.renderer.render(ast)
+}
+
+Complier.prototype.overrideRender = function (name, func) {
+  Render.prototype[name] = func
 }
 
 export default Complier
