@@ -9,22 +9,27 @@
 <body>
     <script src="dist/tpl.js"></script>
     <script>
-        let tpl = new Tpl()
-        let nodes = tpl.render({
-    ast: [{
-      type: 'tag',
-      tag: 'p',
-      children: [
-        {
-          type: 'text',
-          text: '{{ text }}'
-        }
-      ]
-    }],
-    data: {
-      text: 'This is a text'
+        var tpl = new Tpl()
+    var data = {
+        divClass: 'div',
+        out: 'outer'
     }
-  }).getDom()
+    var htmlString = ' \
+        <div class="{{ divClass }}"> \
+            <p>{{ "inner" }}</p> \
+        </div> \
+        <p>{{ out + "p" }}</p> \
+    '
+    var dom = tpl.parse(htmlString).render({ data: data }).getDom()
+    /**
+     * dom is:
+     * [
+     *  <div class="div">
+     *      <p>inner</p>
+     *  </div>,
+     *  <p>outerp</p>
+     * ]
+    */
     </script>
 </body>
 </html>
