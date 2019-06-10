@@ -11,8 +11,21 @@
     "jest": "jest",
     "docs": "npx jsdoc -c jsdoc.json"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "maoyonglong",
+  "license": "MIT",
+  "keywords": [
+    "ast",
+    "template",
+    "engine"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maoyonglong/frontend-tpl.git"
+  },
+  "bugs": {
+    "url": "https://github.com/maoyonglong/frontend-tpl/issues"
+  },
+  "homepage": "https://github.com/maoyonglong/frontend-tpl#readme",
   "standard": {
     "ignore": [
       "test/",
