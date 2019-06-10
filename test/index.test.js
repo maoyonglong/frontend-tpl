@@ -202,11 +202,118 @@ test('children: parse two layer', () => {
 
 // --------------------------------------------------------------- Renderer Tests
 
+// single render text
 test('single: render text node', () => {
-  let nodes = tpl.render([{
-    type: 'text',
-    text: 'test'
-  }])._dom
-  console.log(nodes)
+  let nodes = tpl.render({
+    ast: [{
+      type: 'text',
+      text: 'test'
+    }]
+  }).getDom()
   expect(nodes[0].nodeValue).toBe('test')
+})
+test('single: render note node', () => {
+  let nodes = tpl.render({
+    ast: [{
+      type: 'note',
+      note: 'This is a note'
+    }]
+  }).getDom()
+  expect(nodes[0].nodeName).toBe('#comment')
+  expect(nodes[0].nodeValue).toBe('This is a note')
+})
+test('single: render node with children and variables', () => {
+  let nodes = tpl.render({
+    ast: [{
+      type: 'tag',
+      tag: 'p',
+      children: [
+        {
+          type: 'text',
+          text: '{{ text }}'
+        }
+      ]
+    }],
+    data: {
+      text: 'This is a text'
+    }
+  }).getDom()
+  expect(nodes[0].childNodes[0].nodeValue).toBe('This is a text')
+})
+
+// border test
+test('brother: render node with children and variables', () => {
+  let nodes = tpl.render({
+    ast: [{
+      type: 'tag',
+      tag: 'p',
+      children: [
+        {
+          type: 'text',
+          text: '{{ "text1: " + text }}'
+        }
+      ]
+    }, {
+      type: 'tag',
+      tag: 'p',
+      children: [
+        {
+          type: 'text',
+          text: '{{ "text2: " + text }}'
+        }
+      ]
+    }],
+    data: {
+      text: 'This is a text'
+    }
+  }).getDom()
+  expect(nodes[0].childNodes[0].nodeValue).toBe('text1: This is a text')
+  expect(nodes[1].childNodes[0].nodeValue).toBe('text2: This is a text')
+})
+
+
+// override function tests
+test('override text node function', () => {
+  let tpl = new Tpl()
+  tpl.overrideRender('handleTextNode', (node, astNode, data) => {
+    node.nodeValue = 'handleTextNode: ' + astNode.text
+  })
+  let nodes = tpl.render({
+    ast: [{
+      type: 'text',
+      text: 'sdfsdf'
+    }]
+  }).getDom()
+  expect(nodes[0].nodeValue).toBe('handleTextNode: sdfsdf')
+})
+
+test('override note node function', () => {
+  let tpl = new Tpl()
+  tpl.overrideRender('handleNoteNode', (node, astNode, data) => {
+    node.nodeValue = 'handleNoteNode: ' + astNode.note
+  })
+  let nodes = tpl.render({
+    ast: [{
+      type: 'note',
+      note: 'sdfsdf'
+    }]
+  }).getDom()
+  expect(nodes[0].nodeValue).toBe('handleNoteNode: sdfsdf')
+})
+
+test('override tag node function', () => {
+  let tpl = new Tpl()
+  tpl.overrideRender('handleTagNode', (node, astNode, data) => {
+    node.className = data.prefix + astNode.tag
+  })
+  let nodes = tpl.render({
+    ast: [{
+      type: 'tag',
+      tag: 'p'
+    }],
+    data: {
+      prefix: 'handleTag-'
+    }
+  }).getDom()
+  expect(nodes[0].className).toBe('handleTag-p')
 })

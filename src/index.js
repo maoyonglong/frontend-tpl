@@ -31,7 +31,7 @@ function Tpl (str, data) {
  * @return { Tpl }
  */
 Tpl.prototype.parse = function (str) {
-  this._ast = this.compiler.parse(this.str || str)
+  this._ast = this.compiler.parse(str || this.str)
   return this
 }
 
@@ -69,7 +69,7 @@ Tpl.prototype.parse = function (str) {
  *  //
  */
 Tpl.prototype.render = function (obj) {
-  this._dom = this.compiler.render(this._ast || obj.ast, this.data || obj.data)
+  this._dom = this.compiler.render(obj.ast || this._ast, obj.data || this.data)
   return this
 }
 

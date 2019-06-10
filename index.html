@@ -9,12 +9,22 @@
 <body>
     <script src="dist/tpl.js"></script>
     <script>
-        var tpl = new Tpl()
-        var data = {
-            active: '1',
-            sdfsdf: 'sdfsdfdsfsdfsdf'
+        let tpl = new Tpl()
+        let nodes = tpl.render({
+    ast: [{
+      type: 'tag',
+      tag: 'p',
+      children: [
+        {
+          type: 'text',
+          text: '{{ text }}'
         }
-        console.log(tpl.parse(`<div class="{{ active }}"><p class="red">{{ JSON.stringify({a: active}) }}sdfsdfas</p></div><a>sdfsdf</a>`).render({ data }).getDom()[0])
+      ]
+    }],
+    data: {
+      text: 'This is a text'
+    }
+  }).getDom()
     </script>
 </body>
 </html>

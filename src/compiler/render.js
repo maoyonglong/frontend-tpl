@@ -38,9 +38,9 @@ function replaceMatchesWord (str, data) {
   }
 }
 
-function myEval (expression) {
+function myEval (expression, data) {
   var Fn = Function
-  return new Fn('return ' + expression)()
+  return new Fn('data', `return ${expression}`)(data)
 }
 
 /**
@@ -71,7 +71,7 @@ Renderer.prototype.render = render
  */
 Renderer.prototype.handleTextNode = function (node, astNode, data) {
   let text = astNode.text
-  node.nodeValue = myEval(replaceMatchesWord(text, data)) || text
+  node.nodeValue = myEval(replaceMatchesWord(text, data), data) || text
 }
 /**
  * @description This is a callback to handle note node when Renderering,
@@ -84,7 +84,7 @@ Renderer.prototype.handleTextNode = function (node, astNode, data) {
  */
 Renderer.prototype.handleNoteNode = function (node, astNode, data) {
   let note = astNode.note
-  node.nodeValue = myEval(replaceMatchesWord(note, data)) || note
+  node.nodeValue = myEval(replaceMatchesWord(note, data), data) || note
 }
 /**
  * @description This is a callback to handle tag node when Renderering,
@@ -100,7 +100,7 @@ Renderer.prototype.handleTagNode = function (node, astNode, data) {
   if (attrs) {
     for (let attrKey in attrs) {
       let attr = attrs[attrKey]
-      node.setAttribute(attrKey, myEval(replaceMatchesWord(attr, data)) || attr)
+      node.setAttribute(attrKey, myEval(replaceMatchesWord(attr, data), data) || attr)
     }
   }
 }

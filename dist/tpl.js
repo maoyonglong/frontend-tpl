@@ -501,9 +501,9 @@
     }
   }
 
-  function myEval(expression) {
+  function myEval(expression, data) {
     var Fn = Function;
-    return new Fn('return ' + expression)();
+    return new Fn('data', "return ".concat(expression))(data);
   }
   /**
    * @description Renderer the ast, defined in Renderer.prototype
@@ -536,7 +536,7 @@
 
   Renderer.prototype.handleTextNode = function (node, astNode, data) {
     var text = astNode.text;
-    node.nodeValue = myEval(replaceMatchesWord(text, data)) || text;
+    node.nodeValue = myEval(replaceMatchesWord(text, data), data) || text;
   };
   /**
    * @description This is a callback to handle note node when Renderering,
@@ -551,7 +551,7 @@
 
   Renderer.prototype.handleNoteNode = function (node, astNode, data) {
     var note = astNode.note;
-    node.nodeValue = myEval(replaceMatchesWord(note, data)) || note;
+    node.nodeValue = myEval(replaceMatchesWord(note, data), data) || note;
   };
   /**
    * @description This is a callback to handle tag node when Renderering,
@@ -570,7 +570,7 @@
     if (attrs) {
       for (var attrKey in attrs) {
         var attr = attrs[attrKey];
-        node.setAttribute(attrKey, myEval(replaceMatchesWord(attr, data)) || attr);
+        node.setAttribute(attrKey, myEval(replaceMatchesWord(attr, data), data) || attr);
       }
     }
   };
@@ -660,7 +660,7 @@
 
 
   Tpl.prototype.parse = function (str) {
-    this._ast = this.compiler.parse(this.str || str);
+    this._ast = this.compiler.parse(str || this.str);
     return this;
   };
   /**
@@ -699,7 +699,7 @@
 
 
   Tpl.prototype.render = function (obj) {
-    this._dom = this.compiler.render(this._ast || obj.ast, this.data || obj.data);
+    this._dom = this.compiler.render(obj.ast || this._ast, obj.data || this.data);
     return this;
   };
   /**
