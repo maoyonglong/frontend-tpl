@@ -47,7 +47,7 @@
         "scripts": [],
         "menu":{
             "Github repo":{
-                "href":"",
+                "href":"https://github.com/maoyonglong/frontend-tpl",
                 "target":"_blank",
                 "class":"menu-item",
                 "id":"repository"

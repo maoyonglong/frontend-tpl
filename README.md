@@ -50,4 +50,4 @@ For example, you can use the jsdom module.
 You can download this depository and run `npm test` to see the unit test. 
 
 # Docs
-If you want to get more information, please see [API Document](./docs/index.html)
+If you want to get more information, please see [API Document](https://maoyonglong.github.io/frontend-tpl/)

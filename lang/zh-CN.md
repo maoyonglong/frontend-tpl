@@ -49,4 +49,4 @@ var tpl = new Tpl()
 你可以下载该仓库，并运行`npm test`来查看单元测试结果。
 
 # Docs
-如果你希望获取更多信息，请看 [API Document](./docs/index.html)
+如果你希望获取更多信息，请看 [API Document](https://maoyonglong.github.io/frontend-tpl/)
