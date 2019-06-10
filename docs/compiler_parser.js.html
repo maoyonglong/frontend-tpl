@@ -1,4 +1,56 @@
-const INIT = 0 // 初始状态
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>compiler/parser.js - Frontend-tpl</title>
+    
+    <meta name="description" content="A Simple fontend template engine" />
+    
+        <meta name="keywords" content="JavaScript, Object-oriented" />
+        <meta name="keyword" content="JavaScript, Object-oriented" />
+    
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    <input type="text" id="nav-search" placeholder="Search" />
+    
+    <h2><a href="index.html">Home</a></h2><h2><a href="" target="_blank" class="menu-item" id="repository" >Github repo</a></h2><h3>Classes</h3><ul><li><a href="Complier.html">Complier</a><ul class='members'><li data-type='member' style='display: none;'><a href="Complier.html#.this.parser">this.parser</a></li><li data-type='member' style='display: none;'><a href="Complier.html#.this.renderer">this.renderer</a></li></ul><ul class='methods'><li data-type='method' style='display: none;'><a href="Complier.html#overrideRender">overrideRender</a></li><li data-type='method' style='display: none;'><a href="Complier.html#parse">parse</a></li><li data-type='method' style='display: none;'><a href="Complier.html#render">render</a></li></ul></li><li><a href="Parser.html">Parser</a></li><li><a href="Renderer.html">Renderer</a><ul class='methods'><li data-type='method' style='display: none;'><a href="Renderer.html#handleNoteNode">handleNoteNode</a></li><li data-type='method' style='display: none;'><a href="Renderer.html#handleTagNode">handleTagNode</a></li><li data-type='method' style='display: none;'><a href="Renderer.html#handleTextNode">handleTextNode</a></li><li data-type='method' style='display: none;'><a href="Renderer.html#render">render</a></li></ul></li><li><a href="Tpl.html">Tpl</a><ul class='members'><li data-type='member' style='display: none;'><a href="Tpl.html#.this.compiler">this.compiler</a></li><li data-type='member' style='display: none;'><a href="Tpl.html#.this.data">this.data</a></li><li data-type='member' style='display: none;'><a href="Tpl.html#.this.str">this.str</a></li></ul><ul class='methods'><li data-type='method' style='display: none;'><a href="Tpl.html#getAst">getAst</a></li><li data-type='method' style='display: none;'><a href="Tpl.html#getDom">getDom</a></li><li data-type='method' style='display: none;'><a href="Tpl.html#overrideRender">overrideRender</a></li><li data-type='method' style='display: none;'><a href="Tpl.html#parse">parse</a></li><li data-type='method' style='display: none;'><a href="Tpl.html#render">render</a></li></ul></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">compiler/parser.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const INIT = 0 // 初始状态
 const LEFT_TAG_START = 1 // 左标签的开始符号状态
 const LEFT_TAG = 2 // 左标签名字状态
 const LEFT_TAG_IN = 3 // 左标签里面状态
@@ -47,7 +99,7 @@ const Tag = {
     return this.single.indexOf(tag) >= 0
   },
   isDouble (tag) {
-    return this.single.indexOf(tag) < 0
+    return this.single.indexOf(tag) &lt; 0
   }
 }
 
@@ -59,7 +111,7 @@ const Condition = {
   },
   // 是否是小于号
   isLg (ch) {
-    return ch === '<'
+    return ch === '&lt;'
   },
   // 是否是大于号
   isGt (ch) {
@@ -113,7 +165,7 @@ function parse (str) {
   let hyphenDirection = '' // 暂存注释横线方向（左右）
   let tmp = '' // 暂存值
   this.len = str.length
-  while (this.p < this.len) {
+  while (this.p &lt; this.len) {
     // console.log(p, len, state)
     // 有穷自动机逻辑
     let ch = str.charAt(this.p) // 当前字符
@@ -170,7 +222,7 @@ function parse (str) {
         this.p++
         continue
       case LEFT_TAG_IN:
-        if (!Condition.isSlash(ch) && !Condition.isSpace(ch)) {
+        if (!Condition.isSlash(ch) &amp;&amp; !Condition.isSpace(ch)) {
           state = ATTR_KEY
           key = ch
         }
@@ -209,7 +261,7 @@ function parse (str) {
         if (!Condition.isSlash(ch)) {
           this.p--
           curNode.children = parse.call(this, str)
-          // < / 会死循环 --> 跳过<
+          // &lt; / 会死循环 --> 跳过&lt;
           this.p++
         } else {
           state = RIGHT_TAG_SLASH
@@ -269,7 +321,7 @@ function parse (str) {
         this.p++
         continue
       case ATTR_SPACE:
-        if (!Condition.isSpace(ch) && !Condition.isEqual(ch)) {
+        if (!Condition.isSpace(ch) &amp;&amp; !Condition.isEqual(ch)) {
           state = ATTR_KEY
         }
         if (Condition.isEqual(ch)) {
@@ -372,3 +424,32 @@ function Parser () {
 Parser.prototype.parse = parse
 
 export default Parser
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.2</a> using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+<script src="scripts/search.js" defer></script>
+
+
+<script src="scripts/collapse.js" defer></script>
+
+
+</body>
+</html>

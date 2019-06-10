@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>index.js - Frontend-tpl</title>
+    
+    <meta name="description" content="A Simple fontend template engine" />
+    
+        <meta name="keywords" content="JavaScript, Object-oriented" />
+        <meta name="keyword" content="JavaScript, Object-oriented" />
+    
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    <input type="text" id="nav-search" placeholder="Search" />
+    
+    <h2><a href="index.html">Home</a></h2><h2><a href="" target="_blank" class="menu-item" id="repository" >Github repo</a></h2><h3>Classes</h3><ul><li><a href="Complier.html">Complier</a><ul class='members'><li data-type='member' style='display: none;'><a href="Complier.html#.this.parser">this.parser</a></li><li data-type='member' style='display: none;'><a href="Complier.html#.this.renderer">this.renderer</a></li></ul><ul class='methods'><li data-type='method' style='display: none;'><a href="Complier.html#overrideRender">overrideRender</a></li><li data-type='method' style='display: none;'><a href="Complier.html#parse">parse</a></li><li data-type='method' style='display: none;'><a href="Complier.html#render">render</a></li></ul></li><li><a href="Parser.html">Parser</a></li><li><a href="Renderer.html">Renderer</a><ul class='methods'><li data-type='method' style='display: none;'><a href="Renderer.html#handleNoteNode">handleNoteNode</a></li><li data-type='method' style='display: none;'><a href="Renderer.html#handleTagNode">handleTagNode</a></li><li data-type='method' style='display: none;'><a href="Renderer.html#handleTextNode">handleTextNode</a></li><li data-type='method' style='display: none;'><a href="Renderer.html#render">render</a></li></ul></li><li><a href="Tpl.html">Tpl</a><ul class='members'><li data-type='member' style='display: none;'><a href="Tpl.html#.this.compiler">this.compiler</a></li><li data-type='member' style='display: none;'><a href="Tpl.html#.this.data">this.data</a></li><li data-type='member' style='display: none;'><a href="Tpl.html#.this.str">this.str</a></li></ul><ul class='methods'><li data-type='method' style='display: none;'><a href="Tpl.html#getAst">getAst</a></li><li data-type='method' style='display: none;'><a href="Tpl.html#getDom">getDom</a></li><li data-type='method' style='display: none;'><a href="Tpl.html#overrideRender">overrideRender</a></li><li data-type='method' style='display: none;'><a href="Tpl.html#parse">parse</a></li><li data-type='method' style='display: none;'><a href="Tpl.html#render">render</a></li></ul></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">index.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import Compiler from './compiler'
+
+/**
+ * @class Tpl
+ * @param { string } [str] htmlString
+ * @param { object } [data] the data in template
+ */
+function Tpl (str, data) {
+  /**
+   * @description store the html string
+   * @memberOf Tpl
+   */
+  this.str = str
+  /**
+   * @description store the template data
+   * @memberOf Tpl
+   */
+  this.data = data
+  /**
+   * @description new and store an instance of Complier
+   * @memberOf Tpl
+   */
+  this.compiler = new Compiler()
+}
+
+/**
+ * @description The method to parse the html string
+ * @for Tpl
+ * @method
+ * @param { string } [str=this.str]
+ * @return { Tpl }
+ */
+Tpl.prototype.parse = function (str) {
+  this._ast = this.compiler.parse(this.str || str)
+  return this
+}
+
+/**
+ * @description The method to render the ast
+ * @for Tpl
+ * @param { object } [obj]
+ * obj: {
+ *    ast: [] // your own ast
+ *    data: [] // the template data
+ * }
+ * @return { Tpl }
+ * @example
+ * // you can use variable to render html string via "{{}}" and data
+ * var tpl = new Tpl()
+ *  var data = {
+ *      divClass: 'div',
+ *      out: 'outer'
+ *  }
+ *  var htmlString = `
+      &lt;div class="{{ divClass }}">
+          &lt;p>{{ "inner" }}&lt;/p>
+      &lt;/div>
+      &lt;p>{{ out + "p" }}&lt;/p>
+   `
+ *  var dom = tpl.parse(htmlString).render({ data: data }).getDom()
+ *  //
+ *  // dom is:
+ *  // [
+ *  //  &lt;div class="div">
+ *  //      &lt;p>inner&lt;/p>
+ *  //  &lt;/div>,
+ *  //  &lt;p>outerp&lt;/p>
+ *  // ]
+ *  //
+ */
+Tpl.prototype.render = function (obj) {
+  this._dom = this.compiler.render(this._ast || obj.ast, this.data || obj.data)
+  return this
+}
+
+/**
+ * @description Use this method you can override the function of Renderer
+ * @for Tpl
+ * @param { string } name the property of Render
+ * @param { function } func the function
+ * @return { Tpl }
+ */
+Tpl.prototype.overrideRender = function (name, func) {
+  this.compiler.overrideRender(name, func)
+  return this
+}
+
+/**
+ * @description Get the ast of Tpl after parsing
+ * @for Tpl
+ * @return { array }
+ * // The format of ast is:
+ * [
+ *  {
+ *    type: 'tag',
+ *    tag: 'div',
+ *    attrs: {
+ *      class: 'container'
+ *    }
+ *    children: [
+ *      // text node
+ *      {
+ *        type: 'text',
+ *        text: 'This is a text node'
+ *      },
+ *      // comment node
+ *      {
+ *        type: 'note',
+ *        note: 'This is a comment node'
+ *      }
+ *    ]
+ *  },
+ *  {
+ *    type: 'tag',
+ *    tag: 'p',
+ *    children: [
+ *      {
+ *        type: 'text',
+ *        text: 'This is the text inner p element'
+ *      }
+ *    ]
+ *  }
+ * ]
+ * // It stands for:
+ * &lt;div class="container">This is a text node&lt;!--This is a comment node-->&lt;/div>
+ * &lt;p>This is the text inner p element&lt;/p>
+ */
+Tpl.prototype.getAst = function () {
+  return this._ast
+}
+
+/**
+ * @description Get the dom array after render
+ * @return {Array}
+ * // For example:
+ * [
+ *  &lt;div>&lt;/div>,
+ *  &lt;p>&lt;/p>
+ * ]
+ */
+Tpl.prototype.getDom = function () {
+  return this._dom
+}
+
+export default Tpl
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.2</a> using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+<script src="scripts/search.js" defer></script>
+
+
+<script src="scripts/collapse.js" defer></script>
+
+
+</body>
+</html>

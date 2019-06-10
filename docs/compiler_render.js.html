@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>compiler/render.js - Frontend-tpl</title>
+    
+    <meta name="description" content="A Simple fontend template engine" />
+    
+        <meta name="keywords" content="JavaScript, Object-oriented" />
+        <meta name="keyword" content="JavaScript, Object-oriented" />
+    
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    <input type="text" id="nav-search" placeholder="Search" />
+    
+    <h2><a href="index.html">Home</a></h2><h2><a href="" target="_blank" class="menu-item" id="repository" >Github repo</a></h2><h3>Classes</h3><ul><li><a href="Complier.html">Complier</a><ul class='members'><li data-type='member' style='display: none;'><a href="Complier.html#.this.parser">this.parser</a></li><li data-type='member' style='display: none;'><a href="Complier.html#.this.renderer">this.renderer</a></li></ul><ul class='methods'><li data-type='method' style='display: none;'><a href="Complier.html#overrideRender">overrideRender</a></li><li data-type='method' style='display: none;'><a href="Complier.html#parse">parse</a></li><li data-type='method' style='display: none;'><a href="Complier.html#render">render</a></li></ul></li><li><a href="Parser.html">Parser</a></li><li><a href="Renderer.html">Renderer</a><ul class='methods'><li data-type='method' style='display: none;'><a href="Renderer.html#handleNoteNode">handleNoteNode</a></li><li data-type='method' style='display: none;'><a href="Renderer.html#handleTagNode">handleTagNode</a></li><li data-type='method' style='display: none;'><a href="Renderer.html#handleTextNode">handleTextNode</a></li><li data-type='method' style='display: none;'><a href="Renderer.html#render">render</a></li></ul></li><li><a href="Tpl.html">Tpl</a><ul class='members'><li data-type='member' style='display: none;'><a href="Tpl.html#.this.compiler">this.compiler</a></li><li data-type='member' style='display: none;'><a href="Tpl.html#.this.data">this.data</a></li><li data-type='member' style='display: none;'><a href="Tpl.html#.this.str">this.str</a></li></ul><ul class='methods'><li data-type='method' style='display: none;'><a href="Tpl.html#getAst">getAst</a></li><li data-type='method' style='display: none;'><a href="Tpl.html#getDom">getDom</a></li><li data-type='method' style='display: none;'><a href="Tpl.html#overrideRender">overrideRender</a></li><li data-type='method' style='display: none;'><a href="Tpl.html#parse">parse</a></li><li data-type='method' style='display: none;'><a href="Tpl.html#render">render</a></li></ul></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">compiler/render.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @class Renderer
+ */
+function Renderer () {}
+
+function render (ast, data) {
+  let nodes = []
+  ast.forEach((astNode) => {
+    let node = null
+    let type = astNode.type
+    if (type === 'text') {
+      node = document.createTextNode(astNode.text)
+      this.handleTextNode(node, astNode, data)
+    } else if (type === 'note') {
+      node = document.createComment(astNode.note)
+      this.handleNoteNode(node, astNode, data)
+    } else if (type === 'tag') {
+      node = document.createElement(astNode.tag)
+      this.handleTagNode(node, astNode, data)
+    }
+    if (astNode.children) {
+      let children = render.call(this, astNode.children, data)
+      children.forEach(child => {
+        node.appendChild(child)
+      })
+    }
+    nodes.push(node)
+  })
+  return nodes
+}
+
+function replaceMatchesWord (str, data) {
+  let content = str.match(/\{\{(.*)\}\}/)
+  if (content !== null) {
+    return content[1].replace(/(?&lt;=[{[,+-/*\s.])\w+(?=[+-/*\s.,}\]])/g, (match, p1) => {
+      return data[match] ? `data.${match}` : match
+    })
+  }
+}
+
+function myEval (expression) {
+  var Fn = Function
+  return new Fn('return ' + expression)()
+}
+
+/**
+ * @description Renderer the ast, defined in Renderer.prototype
+ * @for Renderer
+ * @method
+ * @param { Array } ast the ast Array
+ * @param { Object } data the template data
+ * @return { Array } the dom Array
+ */
+Renderer.prototype.render = render
+/**
+ * @description This is a callback to handle text node when Renderering,
+ * override this function, you can handle text node as you like.
+ * @param { obejct } node DOMElment || DOMNode
+ * @param { object } astNode The ast expression of this node
+ * @param { object } data the template data
+ * @example
+ * // you can use Tpl's overrideRenderer to override this function
+ * var tpl = new Tpl('abcdefg', {
+ *  textTip: 'text handle: '
+ * })
+ * tpl.overrideRenderer('handleTextNode', function (node, astNode, data) {
+ *  let text = astNode.text
+ *  node.nodeValue = data[textTip] + text
+ * })
+ * tpl.parse().Renderer().getDom()[0] // "text handle: abcdefg"
+ */
+Renderer.prototype.handleTextNode = function (node, astNode, data) {
+  let text = astNode.text
+  node.nodeValue = myEval(replaceMatchesWord(text, data)) || text
+}
+/**
+ * @description This is a callback to handle note node when Renderering,
+ * override this function, you can handle note node as you like.
+ * @param { obejct } node DOMElment || DOMNode
+ * @param { object } astNode The ast expression of this node
+ * @param { object } data the template data
+ * @example
+ * // the usage is simliar to handleTextNode
+ */
+Renderer.prototype.handleNoteNode = function (node, astNode, data) {
+  let note = astNode.note
+  node.nodeValue = myEval(replaceMatchesWord(note, data)) || note
+}
+/**
+ * @description This is a callback to handle tag node when Renderering,
+ * override this function, you can handle tag node as you like.
+ * @param { obejct } node DOMElment || DOMNode
+ * @param { object } astNode The ast expression of this node
+ * @param { object } data the template data
+ * @example
+ * // the usage is simliar to handleTextNode
+ */
+Renderer.prototype.handleTagNode = function (node, astNode, data) {
+  let attrs = astNode.attrs
+  if (attrs) {
+    for (let attrKey in attrs) {
+      let attr = attrs[attrKey]
+      node.setAttribute(attrKey, myEval(replaceMatchesWord(attr, data)) || attr)
+    }
+  }
+}
+
+export default Renderer
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.2</a> using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+<script src="scripts/search.js" defer></script>
+
+
+<script src="scripts/collapse.js" defer></script>
+
+
+</body>
+</html>

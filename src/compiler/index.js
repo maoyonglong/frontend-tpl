@@ -1,21 +1,49 @@
 import Parser from './parser'
-import Render from './render'
+import Renderer from './render'
 
+/**
+ * @class Complier
+ */
 function Complier () {
+  /**
+   * @description an instance of Parser
+   * @memberOf Complier
+   */
   this.parser = new Parser()
-  this.renderer = new Render()
+  /**
+   * @memberof Complier
+   * @description an instance of Renderer
+   */
+  this.renderer = new Renderer()
 }
 
+/**
+ * @description parse the html string
+ * @for Complier
+ * @param { string } str html string
+ * @return { Array } ast
+ */
 Complier.prototype.parse = function (str) {
   return this.parser.parse(str)
 }
 
-Complier.prototype.render = function (ast) {
-  return this.renderer.render(ast)
+/**
+ * @description render the ast
+ * @for Compiler
+ * @param { Array } ast ast
+ * @param { Object } data the template data
+ */
+Complier.prototype.render = function (ast, data) {
+  return this.renderer.render(ast, data)
 }
 
+/**
+ * @description override the function of Renderer
+ * @param { string } name the function name
+ * @param { function } func the function
+ */
 Complier.prototype.overrideRender = function (name, func) {
-  Render.prototype[name] = func
+  Renderer.prototype[name] = func
 }
 
 export default Complier

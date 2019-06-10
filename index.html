@@ -7,10 +7,14 @@
     <title>Document</title>
 </head>
 <body>
-    <script src="dist/tpl.bundle.js"></script>
+    <script src="dist/tpl.js"></script>
     <script>
         var tpl = new Tpl()
-        console.log(tpl.parse(`<div class="div"><p class="red">sdfsdfas</p></div><a>sdfsdf</a>`).render()._dom[0])
+        var data = {
+            active: '1',
+            sdfsdf: 'sdfsdfdsfsdfsdf'
+        }
+        console.log(tpl.parse(`<div class="{{ active }}"><p class="red">{{ JSON.stringify({a: active}) }}sdfsdfas</p></div><a>sdfsdf</a>`).render({ data }).getDom()[0])
     </script>
 </body>
 </html>

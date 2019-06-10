@@ -7,11 +7,19 @@
     "start": "npm run dev",
     "dev": "rollup -c --enviroment",
     "build": "rollup -c --environment isBuild",
-    "test": "npm run jest",
-    "jest": "jest __jest__/__test__"
+    "test": "npm run dev && npm run jest",
+    "jest": "jest",
+    "docs": "npx jsdoc -c jsdoc.json"
   },
   "author": "",
   "license": "ISC",
+  "standard": {
+    "ignore": [
+      "test/",
+      "dist/",
+      "lib"
+    ]
+  },
   "devDependencies": {
     "@babel/cli": "^7.4.4",
     "@babel/core": "^7.4.5",
@@ -20,7 +28,9 @@
     "@babel/preset-env": "^7.4.5",
     "@babel/runtime": "^7.4.5",
     "babel-jest": "^24.8.0",
+    "docdash": "^1.1.1",
     "jest-cli": "^24.8.0",
+    "jsdoc": "^3.6.2",
     "rollup": "^1.12.4",
     "rollup-plugin-babel": "^4.3.2",
     "rollup-plugin-commonjs": "^10.0.0",

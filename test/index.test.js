@@ -1,6 +1,8 @@
-const Tpl = require('../tpl')
+const Tpl = require('../lib/tpl')
 
 const tpl = new Tpl()
+
+// ---------------------------------------------------- Parser Tests
 
 // single node tests
 test('single: parse text node', () => {
@@ -123,7 +125,7 @@ test('brother: parse double tag node with attrs', () => {
 })
 
 // children nodes test
-test('children: one layer', () => {
+test('children: parse one layer', () => {
   expect(tpl.parse('<p>sdfsdf</p>')._ast).toEqual([
     {
       type: 'tag',
@@ -177,7 +179,7 @@ test('children: one layer', () => {
     }
   ])
 })
-test('children: two layer', () => {
+test('children: parse two layer', () => {
   expect(tpl.parse('<div><p>sdfsdfsdf</p></div>')._ast).toEqual([
     {
       type: 'tag',
@@ -196,4 +198,15 @@ test('children: two layer', () => {
       ]
     }
   ])
+})
+
+// --------------------------------------------------------------- Renderer Tests
+
+test('single: render text node', () => {
+  let nodes = tpl.render([{
+    type: 'text',
+    text: 'test'
+  }])._dom
+  console.log(nodes)
+  expect(nodes[0].nodeValue).toBe('test')
 })

@@ -1,15 +1,15 @@
 # Fontend-tpl
-This is a simple fontend template engine
+这是一个简单的前端模板引擎
 
-# Language
-English || [中文](./lang/zh-CN.md)
+# 语言
+[English](../README.md) || 中文
 
-# Usage
-### Browser
+# 用法
+### 浏览器
 ```html
 <script src="dist/tpl.js"></script>
 <!--
-    If it work in prodution, you may use the following instead:
+    如果是生产环境，你可能需要换成以下文件：
     <script src="dist/tpl.bundle.js"></script>
 -->
 <script>
@@ -40,14 +40,13 @@ English || [中文](./lang/zh-CN.md)
 ```js
 var Tpl = require('frontend-tpl')
 var tpl = new Tpl()
-// some code as above
+// 用法和上面一致
 ```
-> Attention  
-If you want to use it in node environment, you should offer a environment of DOM.  
-For example, you can use the jsdom module.
+> 注意：  
+如果你希望代码运行在Node环境，你需要提供一个DOM环境。比如，你可以引入jsdom模块。
 
 ## Tests
-You can download this depository and run `npm test` to see the unit test. 
+你可以下载该仓库，并运行`npm test`来查看单元测试结果。
 
 # Docs
-If you want to get more information, please see [API Document](./docs/index.html)
+如果你希望获取更多信息，请看 [API Document](./docs/index.html)
